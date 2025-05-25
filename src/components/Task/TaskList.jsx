@@ -1,4 +1,20 @@
 const TaskList = ({ tasks }) => {
+  // You can place this function in a utility file or at the top of your component
+
+  function getRandomColorCode() {
+    // Generate random hex for R, G, B (2 digits each)
+    const r = Math.floor(Math.random() * 256)
+      .toString(16)
+      .padStart(2, "0");
+    const g = Math.floor(Math.random() * 256)
+      .toString(16)
+      .padStart(2, "0");
+    const b = Math.floor(Math.random() * 256)
+      .toString(16)
+      .padStart(2, "0");
+    return `#${r}${g}${b}`;
+  }
+
   return (
     <table className="table-fixed overflow-auto xl:w-full">
       <thead>
@@ -56,7 +72,10 @@ const TaskList = ({ tasks }) => {
                   <ul className="flex justify-center gap-1.5 flex-wrap">
                     {task.tags.map((tag) => (
                       <li>
-                        <span className="inline-block h-5 whitespace-nowrap rounded-[45px] bg-[#00D991A1] px-2.5 text-sm capitalize text-light">
+                        <span
+                          className={`inline-block h-5 whitespace-nowrap rounded-[45px]  px-2.5 text-sm capitalize text-light`}
+                          style={{ backgroundColor: getRandomColorCode() }}
+                        >
                           {tag}
                         </span>
                       </li>
