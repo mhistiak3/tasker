@@ -13,36 +13,56 @@ const TaskBoard = () => {
     priority: "medium",
     isStarred: true,
   };
-  // all state
+
+  // Single source of truth for tasks
   const [tasks, setTasks] = useState([initialTask]);
-  const [filterTasks, setFilterTasks] = useState(tasks);
   const [showModal, setShowModal] = useState(false);
   const [taskToUpdate, setTaskToUpdate] = useState(null);
-  console.log(filterTasks);
+  
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [starFilter, setStarFilter] = useState("all"); // "all", "starred", "unstarred"
+
+  // Compute filtered tasks directly in render
+  const getFilteredTasks = () => {
+    let filtered = [...tasks];
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const searchValue = searchTerm.trim().toLowerCase();
+      filtered = filtered.filter((task) =>
+        task.title.toLowerCase().includes(searchValue)
+      );
+    }
+
+    // Apply star filter
+    if (starFilter === "starred") {
+      filtered = filtered.filter((task) => task.isStarred);
+    } else if (starFilter === "unstarred") {
+      filtered = filtered.filter((task) => !task.isStarred);
+    }
+
+    return filtered;
+  };
 
   // Add task in task list
   const handleAddTask = (newTask, isAdd) => {
     if (isAdd) {
       setTasks([...tasks, newTask]);
-      setFilterTasks([...tasks, newTask]);
       setShowModal(false);
     } else {
       setShowModal(false);
       setTasks(tasks.map((task) => (task.id === newTask.id ? newTask : task)));
-      setFilterTasks(
-        tasks.map((task) => (task.id === newTask.id ? newTask : task))
-      );
       setTaskToUpdate(null);
     }
+    // getFilteredTasks()
   };
+
   // Delete task from task list
   const handleDeleteTask = (taskId) => {
-    const newTaskList = tasks.filter((task) => {
-      return task.id !== taskId;
-    });
-    setTasks(newTaskList);
-    setFilterTasks(newTaskList);
+    setTasks(tasks.filter((task) => task.id !== taskId));
   };
+
   // Edit Task from task list
   const handleEditTask = (task) => {
     setShowModal(true);
@@ -51,40 +71,26 @@ const TaskBoard = () => {
 
   // Add to starred task
   const handleStarredTask = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        task.isStarred = !task.isStarred;
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
-    setFilterTasks(updatedTasks);
+    setTasks(tasks.map((task) => 
+      task.id === taskId 
+        ? { ...task, isStarred: !task.isStarred }
+        : task
+    ));
   };
 
   // Filter Starred task
   const handleFilterTask = (e) => {
-    const value = e.target.value;
-    if (value === "starred") {
-      setFilterTasks(tasks.filter((task) => task.isStarred));
-    }
-    if (value === "unstarred") {
-      setFilterTasks(tasks.filter((task) => !task.isStarred));
-    }
-    if (value === "all") {
-      setFilterTasks(tasks);
-    }
+    setStarFilter(e.target.value);
   };
 
   // Delete All Task
   const handleDeleteAllTask = () => {
     if (window.confirm("Do you want to delete all tasks?")) {
       setTasks([]);
-      setFilterTasks([]);
     }
   };
 
-  // Search task
-  // Debounce utility
+  // Search task with debounce
   function debounce(fn, delay) {
     let timer;
     return (...args) => {
@@ -94,16 +100,7 @@ const TaskBoard = () => {
   }
 
   const handleSearchTask = debounce((value) => {
-    const searchValue = value.trim().toLowerCase();
-    if (!searchValue) {
-      setFilterTasks(tasks);
-      return;
-    }
-    setFilterTasks(
-      tasks.filter((task) =>
-        task.title.toLowerCase().includes(searchValue)
-      )
-    );
+    setSearchTerm(value);
   }, 300);
 
   // Close Modal
@@ -117,7 +114,7 @@ const TaskBoard = () => {
       {showModal && (
         <div className="fixed w-full top-10 h-full z-10 bg-dark/80 flex justify-center items-center">
           <span
-            className="absolute top-25 right-10 font-bold text-xl bg-light text-dark  py-1 px-3 rounded-full cursor-pointer"
+            className="absolute top-25 right-10 font-bold text-xl bg-light text-dark py-1 px-3 rounded-full cursor-pointer"
             onClick={handleCloseModal}
           >
             X
@@ -137,7 +134,7 @@ const TaskBoard = () => {
             />
             <div className="overflow-auto">
               <TaskList
-                tasks={filterTasks}
+                tasks={getFilteredTasks()}
                 handleDeleteTask={handleDeleteTask}
                 handleEditTask={handleEditTask}
                 handleStarredTask={handleStarredTask}
