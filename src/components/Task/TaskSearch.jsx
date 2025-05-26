@@ -1,8 +1,7 @@
-
-const TaskSearch = () => {
+const TaskSearch = ({ handleSearchTask }) => {
   return (
     <div className="p-2 flex justify-end mb-4">
-      <form>
+      <div>
         <div className="flex">
           <div className="relative overflow-hidden rounded-lg text-light/60 md:min-w-[380px] lg:min-w-[440px]">
             <input
@@ -11,11 +10,9 @@ const TaskSearch = () => {
               className="z-20 block w-full bg-light/10 px-4 py-2 pr-10 focus:outline-none"
               placeholder="Search Task"
               required
+              onChange={(e) => handleSearchTask(e.target.value)}
             />
-            <button
-              type="submit"
-              className="absolute right-2 top-0 h-full rounded-e-lg text-white md:right-4"
-            >
+            <button className="absolute right-2 top-0 h-full rounded-e-lg text-white md:right-4">
               <svg
                 className="h-4 w-4"
                 aria-hidden="true"
@@ -25,9 +22,9 @@ const TaskSearch = () => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                 />
               </svg>
@@ -35,7 +32,7 @@ const TaskSearch = () => {
             </button>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

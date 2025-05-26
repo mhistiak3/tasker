@@ -8,6 +8,7 @@ function App() {
     <main className="bg-dark font-[Inter] text-white">
       <Header />
       <Hero/>
+      
       <TaskBoard/>
       <Footer/>
     </main>

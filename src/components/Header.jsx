@@ -11,7 +11,7 @@ const Header = () => {
         {/* <!-- Logo Ends --> */}
 
         {/* Add task Button */}
-        <button className="border border-light py-2 px-4 cursor-pointer hover:bg-primary hover:text-dark transition duration-300 hover:border-primary">Add Task</button>
+        <a href="#tasks" className="border border-light py-2 px-4 cursor-pointer hover:bg-primary hover:text-dark transition duration-300 hover:border-primary">Task List</a>
       </div>
     </nav>
     // <!-- Navbar Ends -->
